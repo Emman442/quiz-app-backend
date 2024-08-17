@@ -6,6 +6,7 @@ const morgan = require("morgan");
 const dotenv = require("dotenv")
 dotenv.config({path: "./config.env"});
 const questionRouter = require("./src/routes/questionRoutes");
+const userRouter = require("./src/routes/userRoutes")
 const PORT = process.env.PORT || 3000;
 
 //DB connection
@@ -23,6 +24,7 @@ app.use(cors());
 app.use(morgan("dev"));
 
 app.use("/api/v1/question", questionRouter);
+app.use("/api/v1/user", userRouter);
 console.log(process.env.MONGO_URI);
 
 app.listen(PORT, () => {
