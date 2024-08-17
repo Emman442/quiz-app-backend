@@ -1,6 +1,6 @@
 const bcrypt = require("bcryptjs");
 const User = require("../models/User");
-const jwt = require("jsonwebtoken")
+const jwt = require("jsonwebtoken");
 
 const signToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -31,7 +31,7 @@ const createSendToken = (user, statusCode, req, res) => {
   });
 };
 const signup = async (req, res, next) => {
-    const randomNumber = Math.round(Math.random() *100000)
+  const randomNumber = Math.round(Math.random() * 100000);
   try {
     const newUser = await User.create({
       name: req.body.name,
@@ -40,13 +40,12 @@ const signup = async (req, res, next) => {
       avatar: `https://robohash.org/${randomNumber}`,
     });
 
-  
     createSendToken(newUser, 201, req, res);
   } catch (error) {
     res.status(500).json({
-        status: "failed",
-        error: error?.message || "Something Went wrong, please try again later!"
-    })
+      status: "failed",
+      error: error?.message || "Something Went wrong, please try again later!",
+    });
   }
 };
 
@@ -55,18 +54,18 @@ const login = async (req, res, next) => {
     const { email, password } = req.body;
     if (!email || !password) {
       return res.status(400).json({
-        status:"failed",
+        status: "failed",
         message: "Please provide and passsword",
       });
     }
 
     const user = await User.findOne({ email }).select("+password");
-  
+
     if (!user || !(await user.correctPassword(password, user.password))) {
       return res.status(401).json({
         status: "failed",
-        message: "Icorrect Email or password"
-      })
+        message: "Icorrect Email or password",
+      });
     }
 
     createSendToken(user, 200, req, res);
@@ -92,8 +91,8 @@ const protect = async (req, res, next) => {
   if (!token) {
     return res.status(401).json({
       status: "failed",
-      message: "You are not logged in! Please log in to get access."
-    })
+      message: "You are not logged in! Please log in to get access.",
+    });
   }
 
   // 2) Verification token
@@ -113,7 +112,6 @@ const protect = async (req, res, next) => {
       status: "failed",
       message: "User recently changed password! Please log in again.",
     });
-    
   }
 
   // GRANT ACCESS TO PROTECTED ROUTE
@@ -122,4 +120,11 @@ const protect = async (req, res, next) => {
   next();
 };
 
-module.exports={signup, login, protect}
+const fetchAllUsers = async (req, res, next) => {
+  const users = await User.find({});
+  res
+    .status(200)
+    .json({ message: "users fetched Successfully!", data: { users } });
+};
+
+module.exports = { signup, login, protect, fetchAllUsers };
