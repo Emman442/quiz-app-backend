@@ -1,6 +1,7 @@
 const bcrypt = require("bcryptjs");
 const User = require("../models/User");
 const jwt = require("jsonwebtoken");
+const { promisify} = require("util")
 
 const signToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -127,4 +128,20 @@ const fetchAllUsers = async (req, res, next) => {
     .json({ message: "users fetched Successfully!", data: { users } });
 };
 
-module.exports = { signup, login, protect, fetchAllUsers };
+const getMe = async(req, res, next)=>{
+  try {
+    const loggedInUser = req.user._id
+    const user = await User.findById(loggedInUser)
+    res.status(200).json({
+      status: "success",
+      data: {user}
+    })
+  } catch (error) {
+    return res.status(400).json({
+      status: "failed",
+      message: "Something went wrong, Please try agan later!",
+    });
+  }
+}
+
+module.exports = { signup, login, protect, fetchAllUsers, getMe };
