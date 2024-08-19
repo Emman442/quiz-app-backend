@@ -65,7 +65,7 @@ const login = async (req, res, next) => {
     if (!user || !(await user.correctPassword(password, user.password))) {
       return res.status(400).json({
         status: "failed",
-        message: "Icorrect Email or password",
+        message: "Incorrect Email or password!",
       });
     }
 
