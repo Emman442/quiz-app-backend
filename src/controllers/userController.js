@@ -1,7 +1,7 @@
 const bcrypt = require("bcryptjs");
 const User = require("../models/User");
 const jwt = require("jsonwebtoken");
-const { promisify} = require("util")
+const { promisify } = require("util");
 
 const signToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -128,20 +128,49 @@ const fetchAllUsers = async (req, res, next) => {
     .json({ message: "users fetched Successfully!", data: { users } });
 };
 
-const getMe = async(req, res, next)=>{
+const getMe = async (req, res, next) => {
   try {
-    const loggedInUser = req.user._id
-    const user = await User.findById(loggedInUser)
+    const loggedInUser = req.user._id;
+    const user = await User.findById(loggedInUser);
     res.status(200).json({
       status: "success",
-      data: {user}
-    })
+      data: { user },
+    });
   } catch (error) {
     return res.status(400).json({
       status: "failed",
       message: "Something went wrong, Please try agan later!",
     });
   }
-}
+};
 
-module.exports = { signup, login, protect, fetchAllUsers, getMe };
+const updateScore = async (req, res, next) => {
+  try {
+    const scorePoints = req.body.scorePoints;
+    const updatedUser = await User.findByIdAndUpdate(
+      req.user._id,
+      [
+        {
+          $set: {
+            scorePoints: { $add: ["$scorePoints", Number(scorePoints)] }, // Add 50 to the existing score
+          },
+        },
+      ],
+      { new: true }
+    );
+    res.status(200).json({
+      status: "success",
+      data: {
+        updatedUser,
+      },
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({
+      status: "failed",
+      message: "User Score could not be updated, Please try agan later!",
+    });
+  }
+};
+
+module.exports = { signup, login, protect, fetchAllUsers, getMe, updateScore };
