@@ -9,6 +9,18 @@ const questionRouter = require("./src/routes/questionRoutes");
 const userRouter = require("./src/routes/userRoutes")
 const PORT = process.env.PORT || 3000;
 
+
+app.use(function (req, res, next) {
+  res.header("Access-Control-Allow-Origin", "http://localhost:8000");
+  res.header("Access-Control-Allow-Credentials", true);
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-with, Content-Type, Accept"
+  );
+  next();
+});
+
+
 //DB connection
 mongoose
   .connect(process.env.MONGO_URI, { useNewUrlParser: true })
@@ -20,7 +32,7 @@ mongoose
   });
 
  const corsOptions = {
-   origin: "http://localhost:5173",
+   origin: "*",
    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
    allowedHeaders: "Content-Type,Authorization",
    optionsSuccessStatus: 200,
