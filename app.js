@@ -4,6 +4,7 @@ const cors = require("cors");
 const app = express();
 const morgan = require("morgan");
 const dotenv = require("dotenv")
+const helmet = require("helmet");
 dotenv.config({path: "./config.env"});
 const questionRouter = require("./src/routes/questionRoutes");
 const userRouter = require("./src/routes/userRoutes")
@@ -20,6 +21,11 @@ app.use(function (req, res, next) {
   next();
 });
 
+app.use(
+  helmet({
+    contentSecurityPolicy: false,
+  })
+);
 
 //DB connection
 mongoose
