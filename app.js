@@ -21,11 +21,7 @@ app.use(function (req, res, next) {
   next();
 });
 
-app.use(
-  helmet({
-    contentSecurityPolicy: false,
-  })
-);
+
 
 //DB connection
 mongoose
