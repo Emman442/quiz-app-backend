@@ -146,13 +146,13 @@ const getMe = async (req, res, next) => {
 
 const updateScore = async (req, res, next) => {
   try {
-    const scorePoints = req.body.scorePoints;
+    const scorePoints = Number(req.body.scorePoints); // Ensure scorePoints is a number
     const updatedUser = await User.findByIdAndUpdate(
       req.user._id,
       [
         {
           $set: {
-            scorePoints: { $add: ["$scorePoints", Number(scorePoints)] }, // Add 50 to the existing score
+            scorePoints: { $add: [{ $toDouble: "$scorePoints" }, scorePoints] }, // Convert existing scorePoints to a number
           },
         },
       ],
@@ -168,7 +168,7 @@ const updateScore = async (req, res, next) => {
     console.log(error);
     return res.status(400).json({
       status: "failed",
-      message: "User Score could not be updated, Please try agan later!",
+      message: "User Score could not be updated, Please try again later!",
     });
   }
 };
