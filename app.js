@@ -26,7 +26,7 @@ app.use(function (req, res, next) {
 
 //DB connection
 mongoose
-  .connect(process.env.MONGO_URI, { useNewUrlParser: true })
+  .connect(process.env.MONGO_URI)
   .then((con) => {
     console.log("DB Connected Successfully!!");
   })
@@ -47,7 +47,6 @@ app.use(morgan("dev"));
 
 app.use("/api/v1/question", questionRouter);
 app.use("/api/v1/user", userRouter);
-console.log(process.env.MONGO_URI);
 
 app.listen(PORT, () => {
   console.log(`Quiz app running on port ${PORT}`);
