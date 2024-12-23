@@ -5,10 +5,11 @@ const app = express();
 const morgan = require("morgan");
 const dotenv = require("dotenv")
 const helmet = require("helmet");
-dotenv.config({path: "./config.env"});
+dotenv.config({path: "./.env"});
 const questionRouter = require("./src/routes/questionRoutes");
 const userRouter = require("./src/routes/userRoutes")
 const PORT = process.env.PORT || 3000;
+// console.log(process.env.PORT)
 
 
 app.use(function (req, res, next) {
